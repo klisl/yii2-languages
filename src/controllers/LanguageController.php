@@ -8,15 +8,17 @@ use yii\web\Controller;
 use common\languages\LanguageKsl;
 
 
-class LanguagesController extends Controller
+class LanguageController extends Controller
 {
 
-    public function index(){
-        return $this->render('language');
-    }
+//    public function index(){
+//        return $this->render('language');
+//    }
 
-    public function run(){
+    public function actionIndex(){
 
+        dump('actionRun');
+        exit;
         $language = Yii::$app->request->get('lang');
 
         //предыдущая страница

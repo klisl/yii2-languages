@@ -15,7 +15,7 @@ class Bootstrap implements BootstrapInterface{
 
         //Правила маршрутизации
         $app->getUrlManager()->addRules([
-            'languages' => 'languages/languages/run',
+            'lang' => 'languages/language/index',
 //            'statistics/forms' => 'statistics/stat/forms',
         ], false);
 
