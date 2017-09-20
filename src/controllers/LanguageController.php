@@ -4,25 +4,19 @@ namespace klisl\languages\controllers;
 
 use Yii;
 use yii\web\Controller;
-//use klisl\languages\Models\KslStatistic;
-use klisl\languages\models\LanguageKsl;
+use klisl\languages\LanguageKsl;
 
 
 class LanguageController extends Controller
 {
 
-//    public function index(){
-//        return $this->render('language');
-//    }
-
     public function actionIndex(){
 
-//        dump('actionIndex');
-//        exit;
         $language = Yii::$app->request->get('lang');
 
         //предыдущая страница
         $url_referrer = Yii::$app->request->referrer;
+
         if (!$url_referrer) $url_referrer = Yii::$app->request->hostInfo . '/'. $language;
 
         /*
@@ -36,7 +30,9 @@ class LanguageController extends Controller
          */
         $list_languages = LanguageKsl::$url_language; //список языков
 
-        preg_match("#^(http.*)/($list_languages)*(\?|/)*(.*)#",$url_referrer, $match_arr);
+        $host = Yii::$app->request->hostInfo;
+
+        preg_match("#^($host)/($list_languages)*(\?|/)*(.*)#",$url_referrer, $match_arr);
 
         if($language != LanguageKsl::$default_language){
             // замена идентификатора языка

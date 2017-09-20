@@ -4,6 +4,7 @@ namespace klisl\languages;
 
 use Yii;
 use yii\base\BootstrapInterface;
+use klisl\languages\LanguageKsl;
 
 
 
@@ -13,22 +14,18 @@ class Bootstrap implements BootstrapInterface{
     public function bootstrap($app)
     {
 
-        //Правила маршрутизации
+        /*
+         * Добавим правило маршрутизации для подключения
+         * метода actionIndex контроллера модуля
+         */
         $app->getUrlManager()->addRules([
             'language' => 'languages/language/index',
-//            'statistics/forms' => 'statistics/stat/forms',
         ], false);
 
-//        $app->setComponents(
-//            ['urlManager' => ['class' => 'klisl\languages\UrlManager']]);
-//        dump($app);
 
-//        echo 1;
-//    dump($app->getUrlManager());
-
-//        $app->sourceLanguage = 'ru'; // использован в качестве ключей переводов
-
-
+        /*
+         * Включаем перевод сообщений
+         */
         $app->i18n->translations['app'] =  [
                     'class' => 'yii\i18n\PhpMessageSource',
                     //'forceTranslation' => true,
@@ -36,14 +33,14 @@ class Bootstrap implements BootstrapInterface{
                     'basePath' => '@common/messages',
                 ];
 
+        /*
+         * Установит нужный язык в параметры до выполнения запроса
+         */
+        $app->on(yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
+            (new LanguageKsl())->run();
+        });
 
-//        $app->'on beforeRequest' => function () {
-//            (new klisl\languages\models\LanguageKsl())->run();
-//        };
 
-
-
-//        dump($app->i18n);
         /*
          * Регистрация модуля в приложении
          * (вместо указания в файле frontend/config/main.php

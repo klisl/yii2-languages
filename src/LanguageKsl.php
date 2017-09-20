@@ -4,7 +4,7 @@
  * из frontend\config\main.php и устанавливает язык приложения
  *
  */
-namespace klisl\languages\models;
+namespace klisl\languages;
 
 use Yii;
 
