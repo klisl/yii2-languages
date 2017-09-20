@@ -4,7 +4,7 @@
  * из frontend\config\main.php и устанавливает язык приложения
  *
  */
-namespace klisl\languages;
+namespace klisl\languages\models;
 
 use Yii;
 
@@ -27,12 +27,18 @@ class LanguageKsl
             Yii::$app->homeUrl = '/'.$match_arr[1];
 
             /*
-             * Если URL не содержит указатель языка (например главная страница)-
-             * делаем перенаправление на ее же + добавляем GET параметр языка
+             * Если URL не содержит указатель языка - делаем текущим
+             * язык указанный по-умолчанию
              */
         } else {
             $lang = self::$default_language;
-            Yii::$app->response->redirect(['site/language', 'lang' => $lang]);
+
+            Yii::$app->language = $lang;
+            Yii::$app->formatter->locale = $lang;
+            if($lang != self::$default_language){
+                Yii::$app->homeUrl = '/'.$lang;
+            }
         }
+
     }
 }

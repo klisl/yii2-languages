@@ -15,7 +15,7 @@ class Bootstrap implements BootstrapInterface{
 
         //Правила маршрутизации
         $app->getUrlManager()->addRules([
-            'lang' => 'languages/language/index',
+            'language' => 'languages/language/index',
 //            'statistics/forms' => 'statistics/stat/forms',
         ], false);
 
@@ -35,6 +35,11 @@ class Bootstrap implements BootstrapInterface{
 //                    "sourceLanguage" => "ru",
                     'basePath' => '@common/messages',
                 ];
+
+
+//        $app->'on beforeRequest' => function () {
+//            (new klisl\languages\models\LanguageKsl())->run();
+//        };
 
 
 

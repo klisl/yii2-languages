@@ -12,6 +12,6 @@ use yii\base\Behavior;
 class Module extends BaseModule
 {
 
-    public $controllerNamespace = 'klisl\languages\Controllers';
+    public $controllerNamespace = 'klisl\languages\controllers';
 
 }
