@@ -1,60 +1,89 @@
-yii2-statistics
+yii2-languages
 =================
-[![Laravel 5.4](https://img.shields.io/badge/Laravel-5.4-orange.svg?style=flat-square)](http://laravel.com)
-[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://tldrlegal.com/license/mit-license)
 
-Пакет для вывода статистики посетителей по их IP адресам для сайта/приложения на Yii-2.
+Пакет для создания мультиязычного сайта на фреймворке Laravel-5. Текущий язык отображается в URL (кроме основного языка):
 
-Особенности и преимущества данного пакета:
+* http://site.com
+* http://site.com/en
+* http://site.com/uk
 
-*	Пакет не использует внешние сервисы, данные хранятся в отдельной таблице базы данных.
-*	Статистика формируется на основе уникальных IP адресов посетителей сайта/приложения.
-*	Используется функция для отсеивания из данных статистики поисковых ботов.
-*	Есть возможность добавления IP, которые не нужны в статистике в черный спискок.
-*	Удобная фильтрация вывода результатов статистики (за день, период, по-определенному IP).
+Смена языка осуществляется при нажатии на соответствующие ссылки. Так же, язык можно менять прямо в адресной строке. Не используются сессии и куки. Простой код, рассчитанный на максимальное быстродействие.
 
-
-Какая информация выводится по каждому отдельному посетителю:
-*	Его уникальный IP адрес с возможностью получения информации о его местонахождении.
-*	URL просматриваемой страницы и количество переходов.
-*	Время посещения определенной страницы.
+Данный пакет устанавливает текущую локализацию приложения в зависимости от выбранного вами языка. 
 
 
   
 Установка
 ------------------
-* Установка пакета с помощью Composer.
+* Установка расширения с помощью Composer.
 
 ```
-composer require klisl/yii2-statistics
+composer require klisl/yii2-languages 
 ```
 
-* Выполнить миграцию для создания нужной таблицы в базе данных (консоль):
-```
-yii migrate --migrationPath=@Klisl/Statistics/migrations --interactive=0
+
+* Внести изменения в файл frontend\config\main.php:
+
+
+(1)  в массив return вставить:
+```php
+'sourceLanguage' => 'ru', // использовать в качестве ключей переводов
 ```
 
-* Если нужно – переопределить настройки пакета в файле common/config/params.php:
+(2) в массиве 'components' вложенный массив «request», вставить в него:
+```php
+'baseUrl' => '', // убрать frontend/web
 ```
+
+(3) в компоненте 'urlManager' включаем ЧПУ для ссылок, подключаем класс UrlManager расширения 
+и дублируем  правила (массив 'rules') – вставить перед каждой строкой правила такое же с указанием метки языка. Например:
+```php
+'urlManager' => [
+	'enablePrettyUrl' => true,
+	'showScriptName' => false,
+	'class' => 'klisl\languages\UrlManager',
+	'rules' => [
+
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/' => 'site/index',
+		'/' => 'site/index',
+	
+		//пагинация для главной страницы выводимой post/index
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/page-<page:\d+>/' => 'post/index',
+		'page-<page:\d+>/' => 'post/index',
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/' => 'post/index',
+		'/' => 'post/index',
+
+		[
+			'pattern'=> '<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<url\w+>',
+			'route' => 'post/view',
+			'suffix' => '.html',
+		],
+		[
+			'pattern'=> '/<url\w+>',
+			'route' => 'post/view',
+			'suffix' => '.html',
+		],
+
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<action:(contact|login|logout|language|about|signup)>' => 'site/<action>',
+		'/<action:(contact|login|logout|language|about|signup)>' => 'site/<action>',
+
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
+		'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
+
+		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<controller:\w+>/<action:\w+>/*'=>'<controller>/<action>',
+		'<controller:\w+>/<action:\w+>/*'=>'<controller>/<action>',
+	]
+],
+```
+
+(4) в шаблон frontend\views\layouts\main.php или нужный вид вставить вывод переключения языков:
+```php
 <?php
-return [
-
-    'statistics' => [
-
-        'days_default' => 3, //кол-во дней для вывода статистики по-умолчанию (сегодня/вчера/...)
-
-        'password' => 'klisl', //пароль для входа на страницу статистики. Если false (без кавычек) - вход без пароля
-
-        'authentication' => false, //если true, то статистика доступна только аутентифицированным пользователям
-
-        'auth_route' => 'site/login', //контроллер/действие для страницы аутентификации (по-умолчанию 'site/login')
-
-        'date_old' => 90 //удалять данные через х дней
-    ]
-…
-
+    //вывод ссылок для смены языка
+    echo $this->renderFile(Yii::getAlias('@klisl/languages/views/language.php'));
+?>
 ```
-для этого вставить массив 'statistics' с нужными вложенными элементами.
+
 
 
 
@@ -75,32 +104,6 @@ public function behaviors()
 …
 
 ```
-где в качестве значений массива с ключем 'actions' указать нужные действия контроллера.
-
-В качестве альтернативы можно (не переопределяя метод behaviors) указать в каждом необходимом действии такой код:
-```
-$this->attachBehavior('statistics', [
-    'class' => \Klisl\Statistics\AddStatistics::class,
-    'actions' => [$this->action->id]
-]);
-
-```
-
-* Для перехода на страницу статистики наберите:
-**ВАШ САЙТ/statistics**
-
-Откроется форма для входа на страницу с вводом пароля или страница аутентификации (в зависимости от настроек).
-После ввода правильных данных, откроется сама страница статистики с формами для фильтрации.
-
-Пароль для входа, по-умолчанию: ***klisl***
-
-При тестировании на локальном компьютере, в статистику попадет IP 127.0.0.1. 
-После начала использования пакета на хостинге, необходимо будет добавить свой IP в черный список, чтобы он не выводился в статистике.
-
-
-
-
-![enter image description here](http://klisl.com/frontend/web/images/external/lar_stat3.jpg)
 
 
 Мой блог: [klisl.com](http://klisl.com)  

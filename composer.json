@@ -4,7 +4,8 @@
   "type": "yii2-extension",
   "keywords": [
         "yii2",
-        "languages"
+        "languages",
+        "multilanguage"
     ],
     "license": "MIT",
     "authors": [

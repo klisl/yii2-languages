@@ -27,11 +27,10 @@ class Bootstrap implements BootstrapInterface{
          * Включаем перевод сообщений
          */
         $app->i18n->translations['app'] =  [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    //'forceTranslation' => true,
-//                    "sourceLanguage" => "ru",
-                    'basePath' => '@common/messages',
-                ];
+            'class' => 'yii\i18n\PhpMessageSource',
+            //'forceTranslation' => true,
+            'basePath' => '@common/messages',
+        ];
 
         /*
          * Установит нужный язык в параметры до выполнения запроса
@@ -44,12 +43,8 @@ class Bootstrap implements BootstrapInterface{
         /*
          * Регистрация модуля в приложении
          * (вместо указания в файле frontend/config/main.php
-         *  'modules' => [
-         *      'statistics' => 'Klisl\Statistics\Module'
-         *  ],
          */
          $app->setModule('languages', 'klisl\languages\Module');
-
 
     }
 }

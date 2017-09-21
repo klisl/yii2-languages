@@ -49,4 +49,5 @@ class LanguageController extends Controller
         // перенаправление
         Yii::$app->response->redirect($url);
     }
+
 }

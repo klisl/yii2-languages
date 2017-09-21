@@ -8,7 +8,6 @@ use yii\base\Module as BaseModule;
 use yii\base\Behavior;
 
 
-
 class Module extends BaseModule
 {
 
