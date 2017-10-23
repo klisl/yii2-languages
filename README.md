@@ -1,15 +1,24 @@
 yii2-languages
 =================
 
-Пакет для создания мультиязычного сайта на php-фреймворке Yii-2. Текущий язык отображается в URL (кроме основного языка):
+Пакет для создания мультиязычного сайта или WEB-приложения на php-фреймворке Yii-2. Текущий язык отображается в URL. Есть возможность 
+убрать основной язык из отображаемых. 
+Пример (русский использован в качестве основного языка и выбрана опция не выводить основной язык):
 
 * http://site.com
 * http://site.com/en
 * http://site.com/uk
 
-Смена языка осуществляется при нажатии на соответствующие ссылки. Так же, язык можно менять прямо в адресной строке. Не используются сессии и куки. Простой код, рассчитанный на максимальное быстродействие.
+* http://site.com/contact
+* http://site.com/en/contact
+* http://site.com/uk/contact
 
-Данное расширение устанавливает текущую локализацию приложения в зависимости от выбранного вами языка. 
+
+Смена языка осуществляется при нажатии на соответствующие ссылки которые выводятся виджетом. Так же, язык можно менять прямо в адресной строке. 
+Не используются сессии, куки и база данных для работы расширения. Код рассчитан на максимальное быстродействие. 
+Использование данного модуля мультиязычности не требует внесения изменений в правила маршрутизации компонента urlManager.
+
+Расширение устанавливает текущую локализацию приложения в зависимости от выбранного языка. 
 
 
   
@@ -30,56 +39,53 @@ composer require klisl/yii2-languages
 'sourceLanguage' => 'ru', // использовать в качестве ключей переводов
 ```
 
-(2) в массиве "components" есть вложенный массив "request", вставить в него:
+(2)  ниже, так же в массив "return" вставить регистрацию и параметры модуля:
 ```php
-'baseUrl' => '', // убрать frontend/web
-```
-
-(3) в компоненте приложения "urlManager" включаем ЧПУ для ссылок, подключаем класс UrlManager данного расширения 
-и дублируем  правила (массив 'rules') – вставить перед каждой строкой правила такое же с указанием метки языка. Например:
-```php
-'urlManager' => [
-	'enablePrettyUrl' => true,
-	'showScriptName' => false,
-	'class' => 'klisl\languages\UrlManager',
-	'rules' => [
-
-		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/' => 'site/index',
-		'/' => 'site/index',
-	
-		//пагинация
-		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/page-<page:\d+>/' => 'post/index',
-		'page-<page:\d+>/' => 'post/index',
- 
-		[
-			'pattern'=> '<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<url\w+>',
-			'route' => 'post/view',
-			'suffix' => '.html',
-		],
-		[
-			'pattern'=> '/<url\w+>',
-			'route' => 'post/view',
-			'suffix' => '.html',
-		],
- 
-		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<action:(contact|login|logout|about|signup)>' => 'site/<action>',
-		'/<action:(contact|login|logout|about|signup)>' => 'site/<action>',
- 
-		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-		'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
- 
-		'<lang:' . \klisl\languages\LanguageKsl::$url_language . '>/<controller:\w+>/<action:\w+>/*'=>'<controller>/<action>',
-		'<controller:\w+>/<action:\w+>/*'=>'<controller>/<action>',
-	]
+'modules' => [
+    'languages' => [
+        'class' => 'klisl\languages\Module',
+        //Языки используемые в приложении
+        'languages' => [
+            'English' => 'en',
+            'Русский' => 'ru',
+            'Українська' => 'uk',
+        ],
+        'default_language' => 'ru', //основной язык (по-умолчанию)
+        'show_default' => false, //true - показывать в URL основной язык, false - нет
+    ],
 ],
 ```
+По-умолчанию модуль использует английский, русский и украинский языки. Удалить или добавить нужные в параметрах модуля.
 
-(4) в шаблон **frontend\views\layouts\main.php** или нужный вид вставить вывод переключения языков:
+
+(3) в массиве "components" есть вложенный массив "request", вставить в него:
 ```php
-<?php
-    //вывод ссылок для смены языка
-    echo $this->renderFile(Yii::getAlias('@klisl/languages/views/language.php'));
-?>
+'baseUrl' => '', //убрать frontend/web
+'class' => 'klisl\languages\Request'
+```
+
+(4) в компоненте приложения "urlManager" включаем ЧПУ для ссылок, подключаем класс UrlManager переопределенный данным расширением:
+```php
+'urlManager' => [
+    'enablePrettyUrl' => true,
+    'showScriptName' => false,
+    'enableStrictParsing' => true,
+    'class' => 'klisl\languages\UrlManager',
+    'rules' => [
+        'languages' => 'languages/default/index', //для модуля мультиязычности
+        //далее создаем обычные правила
+        '/' => 'site/index',
+        '<action:(contact|login|logout|language|about|signup)>' => 'site/<action>',
+    ],
+],
+```
+В начале списка правил указываем правило для работы модуля мультиязычности. Остальные правила формируются обычным образом.
+
+(5) в шаблон **frontend\views\layouts\main.php** или нужный вид вставить вывод виджета отображающего ссылки для переключения языков:
+```php
+
+    <?= klisl\languages\widgets\ListWidget::widget() ?>
+
 ```
 
 
@@ -137,5 +143,6 @@ public function actionStat()
 Для настройки базы данных и моделей выполнить действия указанные в данной статье статье: <http://klisl.com/multilingual_BD.html>.  
 
 
+Подробное описание расширения (с небольшими отличиями т.к. рассмотрен ручной вариант создания модуля): <http://klisl.com/multilingual_Yii2.html>.
 
 Мой блог: [klisl.com](http://klisl.com)  

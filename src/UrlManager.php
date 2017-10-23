@@ -1,20 +1,30 @@
 <?php
 /*
- * Добавляет указатель языка в ссылки на сайте
+ * Добавляет указатель языка в ссылки
  */
 namespace klisl\languages;
+
 use Yii;
-use klisl\languages\LanguageKsl;
 
 class UrlManager extends \yii\web\UrlManager {
 
     public function createUrl($params) {
 
+        //Получаем сформированную ссылку(без идентификатора языка)
+        $url = parent::createUrl($params);
+
         if (empty($params['lang'])) {
+            //текущий язык приложения
+            $curentLang = Yii::$app->language;
 
-            if(Yii::$app->language != LanguageKsl::$default_language) $params['lang'] = Yii::$app->language;;
-        }
-        return parent::createUrl($params);
+            //Добавляем к URL префикс - буквенный идентификатор языка
+            if ($url == '/') {
+                return '/' . $curentLang;
+            } else {
+                return '/' . $curentLang . $url;
+            }
+        };
+
+        return $url;
     }
-
 }
