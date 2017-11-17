@@ -12,6 +12,9 @@ class Bootstrap implements BootstrapInterface{
     //Метод, который вызывается автоматически при каждом запросе
     public function bootstrap($app)
     {
+		
+		if(YII_ENV == 'test') return; //для тестового приложения отключаем.
+		
         /*
          * Включаем перевод сообщений
          */
@@ -27,9 +30,9 @@ class Bootstrap implements BootstrapInterface{
 
 
     public function run($app){
-
+	
         $module = Yii::$app->getModule('languages');
-//        dump($module);
+
         $url = $app->request->url;
 
         //Получаем список языков в виде строки
@@ -58,7 +61,7 @@ class Bootstrap implements BootstrapInterface{
              * Если URL не содержит указатель языка и отключен показ основного языка в URL
              */
         } elseif(!$module->show_default){
-//            dump($url);
+
             $lang = $module->default_language; //язык используемый по-умолчанию
 
             $app->language = $lang;
@@ -69,7 +72,7 @@ class Bootstrap implements BootstrapInterface{
              */
         } else {
             $url = $app->request->absoluteUrl; //Возвращает абсолютную ссылку
-//            dump($url);
+
             $lang = $module->default_language;
 
             $app->response->redirect(['languages/default/index', 'lang' => $lang, 'url' => $url], 301);
