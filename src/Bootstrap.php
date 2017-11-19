@@ -5,6 +5,7 @@ namespace klisl\languages;
 use Yii;
 use yii\base\BootstrapInterface;
 use klisl\languages\models\LanguageKsl;
+use yii\web\NotFoundHttpException;
 
 
 class Bootstrap implements BootstrapInterface{
@@ -14,14 +15,14 @@ class Bootstrap implements BootstrapInterface{
     {
 		
 		if(YII_ENV == 'test') return; //для тестового приложения отключаем.
-		
+
         /*
          * Включаем перевод сообщений
          */
         $app->i18n->translations['app'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             //'forceTranslation' => true,
-            'basePath' => '@common/messages',
+            'basePath' => '@app/common/messages',
         ];
 
         $this->run($app);
