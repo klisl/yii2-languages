@@ -2,16 +2,12 @@
 
 namespace klisl\languages\tests\widgets;
 
-
 use klisl\languages\tests\TestCase;
 use klisl\languages\widgets\ListWidget;
 
 
 class ListWidgetTest extends TestCase
 {
-
-    protected $widget;
-
 
     public function testInit()
     {

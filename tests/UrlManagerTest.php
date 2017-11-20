@@ -8,7 +8,7 @@ use Yii;
 class UrlManagerTest extends TestCase
 {
 
-    protected $obj;
+    protected $urlManager;
 
     protected function setUp()
     {
