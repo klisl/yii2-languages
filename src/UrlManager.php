@@ -6,8 +6,16 @@ namespace klisl\languages;
 
 use Yii;
 
+/**
+ * Class UrlManager
+ * @package klisl\languages
+ */
 class UrlManager extends \yii\web\UrlManager {
 
+    /**
+     * @param array|string $params
+     * @return string
+     */
     public function createUrl($params) {
 
         //Получаем сформированную ссылку(без идентификатора языка)

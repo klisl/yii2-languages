@@ -6,11 +6,17 @@ use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 
-
+/**
+ * Class ListWidget
+ * @package klisl\languages\widgets
+ */
 class ListWidget extends Widget{
 
+    /** @var array */
     public $array_languages;
 
+
+    /** @return void */
     public function init() {
 
         parent::init();
@@ -29,14 +35,21 @@ class ListWidget extends Widget{
         if(isset($array_lang[$language])) unset($array_lang[$language]);
         $this->array_languages = $array_lang;
 
-
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     * @return string
+     */
     protected function createLink($key, $value){
         return Html::a($key, ['languages/default/index', 'lang' => $value], ['class' => 'language '.$value] );
     }
 
 
+    /**
+     * @return string
+     */
     public function run() {
 
         return $this->render('list',[

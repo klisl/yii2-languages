@@ -8,20 +8,27 @@ use klisl\languages\models\LanguageKsl;
 use yii\web\NotFoundHttpException;
 
 
+/**
+ * Class Bootstrap
+ * @package klisl\languages
+ */
 class Bootstrap implements BootstrapInterface{
 
-    //Метод, который вызывается автоматически при каждом запросе
+
+    /**
+     * Метод, который вызывается автоматически при каждом запросе
+     *
+     * @param \yii\base\Application $app
+     * @return void
+     */
     public function bootstrap($app)
     {
 		
 		if(YII_ENV == 'test') return; //для тестового приложения отключаем.
 
-        /*
-         * Включаем перевод сообщений
-         */
+        //Включаем перевод сообщений
         $app->i18n->translations['app'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            //'forceTranslation' => true,
             'basePath' => '@app/common/messages',
         ];
 
@@ -29,7 +36,11 @@ class Bootstrap implements BootstrapInterface{
 
     }
 
-
+    /**
+     * @param \yii\base\Application $app
+     *
+     * @return void
+     */
     public function run($app){
 	
         $module = Yii::$app->getModule('languages');
@@ -58,9 +69,7 @@ class Bootstrap implements BootstrapInterface{
             $app->formatter->locale = $match_arr[1];
             $app->homeUrl = '/'.$match_arr[1];
 
-            /*
-             * Если URL не содержит указатель языка и отключен показ основного языка в URL
-             */
+
         } elseif(!$module->show_default){
 
             $lang = $module->default_language; //язык используемый по-умолчанию
@@ -72,7 +81,7 @@ class Bootstrap implements BootstrapInterface{
              * Если URL не содержит указатель языка, а в настройках включен показ основного языка
              */
         } else {
-            $url = $app->request->absoluteUrl; //Возвращает абсолютную ссылку
+            $url = $app->request->absoluteUrl;
 
             $lang = $module->default_language;
 

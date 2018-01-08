@@ -4,11 +4,19 @@ namespace klisl\languages;
 
 use Yii;
 
-
+/**
+ * Class Request
+ * @package klisl\languages
+ */
 class Request extends \yii\web\Request
 {
+
+    /** @var  string */
     private $_lang_url;
 
+    /**
+     * @return mixed|string
+     */
     public function getLangUrl()
     {
             $this->_lang_url = $this->getUrl(); //полный URL
@@ -30,6 +38,10 @@ class Request extends \yii\web\Request
     /*
      * Переопределяем метод для того, чтобы он использовал URL без метки языка.
      * Это позволит использовать обычные правила в UrlManager.
+     *
+     * @return string part of the request URL that is after the entry script and before the question mark.
+     * Note, the returned path info is decoded.
+     * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
      */
     protected function resolvePathInfo()
     {

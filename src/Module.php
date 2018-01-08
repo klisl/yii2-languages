@@ -6,6 +6,10 @@ namespace klisl\languages;
 use yii\base\Module as BaseModule;
 
 
+/**
+ * Class Module
+ * @package klisl\languages
+ */
 class Module extends BaseModule
 {
 

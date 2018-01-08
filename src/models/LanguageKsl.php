@@ -5,14 +5,21 @@ namespace klisl\languages\models;
 use Yii;
 
 
+/**
+ * Class LanguageKsl
+ * @package klisl\languages\models
+ */
 class LanguageKsl
 {
 
-    static $list; //строка вида ru|uk|en|
+    /** @var  string строка вида ru|uk|en| */
+    static $list;
 
-    /*
+
+    /**
      * Преобразование к строке вида ru|uk|en|
      * для использования в регулярных выражениях
+     * @return string
      */
     public static function list_languages(){
 
@@ -32,13 +39,17 @@ class LanguageKsl
 
 
     /**
-    * Создает URL с меткой языка
-    * Разбивает URL на подмассив $match_arr
-    * 0. http://site.loc/ru/contact
-    * 1. http://site.loc
-    * 2. ru или uk или en
-    * 3. остальная часть
-    */
+     * Создает URL с меткой языка
+     * Разбивает URL на подмассив $match_arr
+     * 0. http://site.loc/ru/contact
+     * 1. http://site.loc
+     * 2. ru или uk или en
+     * 3. остальная часть
+     *
+     * @param string $language
+     * @param string $url_referrer
+     * @return string
+     */
     public static function parsingUrl($language, $url_referrer){
 
         $list_languages = self::list_languages(); //список языков
