@@ -42,7 +42,10 @@ class Bootstrap implements BootstrapInterface{
      * @return void
      */
     public function run($app){
-	
+
+        //Если консольное приложение - выход
+        if(Yii::$app->controllerNamespace == 'console\controllers' || Yii::$app->controllerNamespace == 'app\commands') return;
+
         $module = Yii::$app->getModule('languages');
 
         $url = $app->request->url;
