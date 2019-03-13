@@ -18,13 +18,13 @@ class UrlManager extends \yii\web\UrlManager {
      */
     public function createUrl($params) {
 
-        //Получаем сформированную ссылку(без идентификатора языка)
+        $module = Yii::$app->getModule('languages');
+        //Сссылка(без идентификатора языка)
         $url = parent::createUrl($params);
 
-        if (empty($params['lang'])) {
-            //текущий язык приложения
-            $curentLang = Yii::$app->language;
+        $curentLang = Yii::$app->language;
 
+        if (empty($params['lang']) && $curentLang != $module->default_language) {
             //Добавляем к URL префикс - буквенный идентификатор языка
             if ($url == '/') {
                 return '/' . $curentLang;
