@@ -1,13 +1,12 @@
 <?php
-/*
- * Добавляет указатель языка в ссылки
- */
+
 namespace klisl\languages;
 
 use Yii;
 
 /**
  * Class UrlManager
+ * Добавление указателя языка в ссылки
  * @package klisl\languages
  */
 class UrlManager extends \yii\web\UrlManager {
@@ -24,12 +23,13 @@ class UrlManager extends \yii\web\UrlManager {
 
         $curentLang = Yii::$app->language;
 
-        if (empty($params['lang']) && $curentLang != $module->default_language) {
-            //Добавляем к URL префикс - буквенный идентификатор языка
-            if ($url == '/') {
-                return '/' . $curentLang;
-            } else {
-                return '/' . $curentLang . $url;
+        if (empty($params['lang'])) {
+            if($curentLang != $module->default_language || $module->show_default === true){
+                if ($url == '/') {
+                    return '/' . $curentLang;
+                } else {
+                    return '/' . $curentLang . $url;
+                }
             }
         };
 
