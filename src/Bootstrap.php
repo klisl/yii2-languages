@@ -7,13 +7,11 @@ use yii\base\BootstrapInterface;
 use klisl\languages\models\LanguageKsl;
 use yii\web\NotFoundHttpException;
 
-
 /**
  * Class Bootstrap
  * @package klisl\languages
  */
 class Bootstrap implements BootstrapInterface{
-
 
     /**
      * Метод, который вызывается автоматически при каждом запросе
@@ -22,14 +20,17 @@ class Bootstrap implements BootstrapInterface{
      * @return void
      */
     public function bootstrap($app)
-    {
-		
-		if(YII_ENV == 'test') return; //для тестового приложения отключаем.
+    {		
+	if(!Yii::$app->getModule('languages') ||
+            YII_ENV == 'test' ||
+            Yii::$app->controllerNamespace == 'console\controllers' ||
+            Yii::$app->controllerNamespace == 'app\commands'
+        ) return;
 
         //Включаем перевод сообщений
         $app->i18n->translations['app'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'basePath' => '@app/common/messages',
+            'basePath' => '@common/messages',
         ];
 
         $this->run($app);
@@ -42,9 +43,6 @@ class Bootstrap implements BootstrapInterface{
      * @return void
      */
     public function run($app){
-
-        //Если консольное приложение - выход
-        if(Yii::$app->controllerNamespace == 'console\controllers' || Yii::$app->controllerNamespace == 'app\commands') return;
 
         $module = Yii::$app->getModule('languages');
 
