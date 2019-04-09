@@ -55,6 +55,8 @@ class LanguageKsl
         $list_languages = self::list_languages(); //список языков
         $host = Yii::$app->request->hostInfo;
 
+        $match_arr = [];
+
         preg_match("#^($host)/($list_languages)(.*)#", $url_referrer, $match_arr);
 
         //добавляем разделитель
@@ -74,9 +76,16 @@ class LanguageKsl
         } else {
             $match_arr[2] = '/'.$language.$separator;
         }
-
-        // создание нового URL
-        $url = $match_arr[1].$match_arr[2].$match_arr[3];
+        
+        if(isset($match_arr[3])){
+            // создание нового URL
+            $url = $match_arr[1].$match_arr[2].$match_arr[3];
+        } elseif (isset($match_arr[2])){
+            $url = $match_arr[1].$match_arr[2];
+        } else {
+            $url = $match_arr[1];
+        }
+        
         return $url;
     }
 }
